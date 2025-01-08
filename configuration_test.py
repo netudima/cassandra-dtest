@@ -11,6 +11,8 @@ from tools.jmxutils import (JolokiaAgent, make_mbean)
 from distutils.version import LooseVersion
 
 logger = logging.getLogger(__name__)
+ported_to_in_jvm = pytest.mark.ported_to_in_jvm
+
 
 
 class TestConfiguration(Tester):
@@ -44,6 +46,7 @@ class TestConfiguration(Tester):
         session.execute(alter_chunk_len_query.format(chunk_length=64))
         self._check_chunk_length(session, 64)
 
+    @ported_to_in_jvm('4.0')
     @pytest.mark.timeout(60*30)
     def test_change_durable_writes(self):
         """
