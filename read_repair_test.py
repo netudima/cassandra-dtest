@@ -544,7 +544,7 @@ class TestSpeculativeReadRepair(Tester):
         with raises(WriteTimeout):
             session.execute(quorum("INSERT INTO ks.tbl (k, c, v) VALUES (1, 1, 2)"))
 
-        node2.byteman_submit([mk_bman_path('read_repair/sorted_live_endpoints.btm')])
+        node2.byteman_submit([mk_bman_path('read_repair/sorted_live_endpoints{}.btm'.format(script_version))])
         session = self.get_cql_connection(node2)
         with StorageProxy(node2) as storage_proxy:
             assert storage_proxy.blocking_read_repair == 0
@@ -577,7 +577,8 @@ class TestSpeculativeReadRepair(Tester):
         # re-enable writes
         node2.byteman_submit(['-u', mk_bman_path('read_repair/stop_writes.btm')])
 
-        node2.byteman_submit([mk_bman_path('read_repair/sorted_live_endpoints.btm')])
+        script_version = '_5_1' if self.cluster.version() >= LooseVersion('5.1') else ''
+        node2.byteman_submit([mk_bman_path('read_repair/sorted_live_endpoints{}.btm'.format(script_version))])
         coordinator = node2
         # Stop reads on coordinator in order to make sure we do not go through
         # the messaging service for the local reads
@@ -614,7 +615,9 @@ class TestSpeculativeReadRepair(Tester):
         # re-enable writes
         node2.byteman_submit(['-u', mk_bman_path('read_repair/stop_writes.btm')])
 
-        node1.byteman_submit([mk_bman_path('read_repair/sorted_live_endpoints.btm')])
+        script_version = '_5_1' if self.cluster.version() >= LooseVersion('5.1') else ''
+        node1.byteman_submit([mk_bman_path('read_repair/sorted_live_endpoints{}.btm'.format(script_version))])
+
         version = self.cluster.cassandra_version()
         if version < '4.1':
             node1.byteman_submit([mk_bman_path('request_verb_timing.btm')])
@@ -664,7 +667,7 @@ class TestSpeculativeReadRepair(Tester):
         script_version = '_5_1' if self.cluster.version() >= LooseVersion('5.1') else ''
         node2.byteman_submit([mk_bman_path('read_repair/stop_rr_writes{}.btm'.format(script_version))])
 
-        node1.byteman_submit([mk_bman_path('read_repair/sorted_live_endpoints.btm')])
+        node1.byteman_submit([mk_bman_path('read_repair/sorted_live_endpoints{}.btm'.format(script_version))])
         with StorageProxy(node1) as storage_proxy:
             assert storage_proxy.blocking_read_repair == 0
             assert storage_proxy.speculated_rr_read == 0
@@ -701,11 +704,11 @@ class TestSpeculativeReadRepair(Tester):
         node2.byteman_submit(['-u', mk_bman_path('read_repair/stop_writes.btm')])
         node3.byteman_submit(['-u', mk_bman_path('read_repair/stop_writes.btm')])
 
+        script_version = '_5_1' if self.cluster.version() >= LooseVersion('5.1') else ''
         # force endpoint order
-        node1.byteman_submit([mk_bman_path('read_repair/sorted_live_endpoints.btm')])
+        node1.byteman_submit([mk_bman_path('read_repair/sorted_live_endpoints{}.btm'.format(script_version))])
 
         node2.byteman_submit([mk_bman_path('read_repair/stop_data_reads.btm')])
-        script_version = '_5_1' if self.cluster.version() >= LooseVersion('5.1') else ''
         node3.byteman_submit([mk_bman_path('read_repair/stop_rr_writes{}.btm'.format(script_version))])
 
         with StorageProxy(node1) as storage_proxy:
@@ -746,12 +749,12 @@ class TestSpeculativeReadRepair(Tester):
         node2.byteman_submit(['-u', mk_bman_path('read_repair/stop_writes.btm')])
         node3.byteman_submit(['-u', mk_bman_path('read_repair/stop_writes.btm')])
 
+        script_version = '_5_1' if self.cluster.version() >= LooseVersion('5.1') else ''
         # force endpoint order
-        node1.byteman_submit([mk_bman_path('read_repair/sorted_live_endpoints.btm')])
+        node1.byteman_submit([mk_bman_path('read_repair/sorted_live_endpoints{}.btm'.format(script_version))])
 
         node2.byteman_submit([mk_bman_path('read_repair/stop_digest_reads.btm')])
         node3.byteman_submit([mk_bman_path('read_repair/stop_data_reads.btm')])
-        script_version = '_5_1' if self.cluster.version() >= LooseVersion('5.1') else ''
         node2.byteman_submit([mk_bman_path('read_repair/stop_rr_writes{}.btm'.format(script_version))])
 
         with StorageProxy(node1) as storage_proxy:
