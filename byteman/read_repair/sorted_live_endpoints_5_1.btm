@@ -1,0 +1,21 @@
+# Force 1 and 2 nodes to be used for quorum read by forcing the order of Replica objects
+
+# For the case when snitch is still enabled in cassandra.yaml
+RULE sorted live endpoints
+CLASS org.apache.cassandra.locator.SimpleSnitch
+METHOD sortedByProximity
+AT ENTRY
+IF true
+DO
+return $unsortedAddress.sorted(java.util.Comparator.naturalOrder());
+ENDRULE
+
+# For the case when node_proximity is configured in cassandra_latest.yaml and SimpleSnitch is not used
+RULE sorted live endpoints
+CLASS org.apache.cassandra.locator.BaseProximity
+METHOD sortedByProximity
+AT ENTRY
+IF true
+DO
+return $unsortedAddress.sorted(java.util.Comparator.naturalOrder());
+ENDRULE
