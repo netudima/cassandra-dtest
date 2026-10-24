@@ -186,7 +186,7 @@ indev_5_0_x = VersionMeta(name='indev_5_0_x', family=CASSANDRA_5_0, variant='ind
 current_5_0_x = VersionMeta(name='current_5_0_x', family=CASSANDRA_5_0, variant='current', version='5.0.8', min_proto_v=4, max_proto_v=5, java_versions=(11,17))
 
 indev_6_0_x = VersionMeta(name='indev_6_0_x', family=CASSANDRA_6_0, variant='indev', version='github:apache/cassandra-6.0', min_proto_v=4, max_proto_v=5, java_versions=(11,17,21))
-current_6_0_x = VersionMeta(name='current_6_0_x', family=CASSANDRA_6_0, variant='current', version='6.0-alpha1', min_proto_v=4, max_proto_v=5, java_versions=(11,17,21))
+current_6_0_x = VersionMeta(name='current_6_0_x', family=CASSANDRA_6_0, variant='current', version='6.0-alpha2', min_proto_v=4, max_proto_v=5, java_versions=(11,17,21))
 
 
 indev_trunk = VersionMeta(name='indev_trunk', family=TRUNK, variant='indev', version='github:apache/trunk', min_proto_v=4, max_proto_v=5, java_versions=(11,17,21))
